@@ -7,8 +7,11 @@ import { motion } from "framer-motion"
 
 export default function HeroSection() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: e.clientX,
@@ -21,6 +24,8 @@ export default function HeroSection() {
   }, [])
 
   const calculateMovement = (axis: "x" | "y", factor = 20) => {
+    if (!isMounted) return 0
+
     const value = axis === "x" ? mousePosition.x : mousePosition.y
     const windowSize = axis === "x" ? window.innerWidth : window.innerHeight
     return (value - windowSize / 2) / factor
@@ -33,7 +38,9 @@ export default function HeroSection() {
         <div
           className="absolute inset-0 bg-[url('/images/stars-bg.png')] bg-repeat opacity-50"
           style={{
-            transform: `translateX(${calculateMovement("x", -40)}px) translateY(${calculateMovement("y", -40)}px)`,
+            transform: isMounted
+              ? `translateX(${calculateMovement("x", -40)}px) translateY(${calculateMovement("y", -40)}px)`
+              : "none",
           }}
         ></div>
       </div>
@@ -66,7 +73,9 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative"
             style={{
-              transform: `translateX(${calculateMovement("x", 30)}px) translateY(${calculateMovement("y", 30)}px)`,
+              transform: isMounted
+                ? `translateX(${calculateMovement("x", 30)}px) translateY(${calculateMovement("y", 30)}px)`
+                : "none",
             }}
           >
             <div className="relative h-[500px] w-full rounded-xl overflow-hidden border-4 border-purple-500/30 shadow-[0_0_50px_rgba(168,85,247,0.4)]">

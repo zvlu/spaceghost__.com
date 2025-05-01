@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 
 type FloatingObject = {
@@ -16,8 +16,11 @@ type FloatingObject = {
 
 export default function FloatingElements() {
   const objectsRef = useRef<FloatingObject[]>([])
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
+
     // Generate random floating objects
     const objects: FloatingObject[] = []
 
@@ -75,6 +78,10 @@ export default function FloatingElements() {
 
     objectsRef.current = objects
   }, [])
+
+  if (!isMounted) {
+    return null
+  }
 
   const renderObject = (obj: FloatingObject) => {
     const variants = {
